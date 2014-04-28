@@ -1,0 +1,41 @@
+{
+  "name": "passwd-user",
+  "version": "0.0.0",
+  "description": "Get the passwd user entry from a username or uid",
+  "license": "MIT",
+  "repository": "sindresorhus/passwd-user",
+  "author": {
+    "name": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "http://sindresorhus.com"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "passwd",
+    "uid",
+    "gid",
+    "pw",
+    "getpwuid",
+    "posix",
+    "unix",
+    "shell",
+    "home",
+    "dir",
+    "username",
+    "user",
+    "etc",
+    "password",
+    "passwords"
+  ],
+  "devDependencies": {
+    "mocha": "*"
+  }
+}
