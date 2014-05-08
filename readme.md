@@ -2,6 +2,8 @@
 
 > Get the [passwd](http://en.wikipedia.org/wiki/Passwd) user entry from a username or [uid](http://en.wikipedia.org/wiki/User_identifier_(Unix))
 
+*`passwd` isn't used on OS X or Windows.*
+
 
 ## Install
 
@@ -23,7 +25,7 @@ passwdUser.sync('sindresorhus');
 	uid: 501,
 	gid: 20,
 	comments: ['Sindre Sorhus', 'unicorn'],
-	homedir: '/Users/sindresorhus',
+	homedir: '/home/sindresorhus',
 	shell: '/bin/zsh'
 }
 */
