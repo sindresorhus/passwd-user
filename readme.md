@@ -55,6 +55,12 @@ Accepts a `username` or `uid` number and returns an object with:
 ### passwdUser.sync(username | uid)
 
 
+## Related
+
+- [username](https://github.com/sindresorhus/username) - get the users username *(cross-platform)*
+- [fullname](https://github.com/sindresorhus/fullname) - get the users fullname *(cross-platform)*
+
+
 ## License
 
 MIT © [Sindre Sorhus](http://sindresorhus.com)
