@@ -6,6 +6,11 @@ it('should get passwd entry async', function (cb) {
 	passwdUser('root', function (err, user) {
 		assert(!err, err);
 		assert.equal(user.uid, 0);
+		if (process.platform === 'linux') {
+			assert.strictEqual(user.homedir, '/root');
+		} else if (process.platform === 'darwin') {
+			assert.strictEqual(user.homedir, '/var/root');
+		}
 		cb();
 	});
 });
