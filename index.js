@@ -22,7 +22,7 @@ function extractDarwin(line) {
 		password: cols[1],
 		uid: Number(cols[2]),
 		gid: Number(cols[3]),
-		comments: cols[7], // actually full name
+		fullname: cols[7], // actually full name
 		homedir: cols[8],
 		shell: cols[9]
 	};
@@ -45,7 +45,7 @@ function extractLinux(line) {
 		password: cols[1],
 		uid: Number(cols[2]),
 		gid: Number(cols[3]),
-		comments: cols[4] && cols[4].split(','), // comments or full name
+		fullname: cols[4] && cols[4].split(',')[0], // comments or full name
 		homedir: cols[5],
 		shell: cols[6]
 	};
