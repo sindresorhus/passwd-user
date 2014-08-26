@@ -1,6 +1,7 @@
 'use strict';
-var execFile = require('child_process').execFile;
 var fs = require('fs');
+var execFile = require('child_process').execFile;
+var execSync = require('sync-exec');
 
 function extractDarwin(line) {
 	var cols = line.split(':');
@@ -22,7 +23,7 @@ function extractDarwin(line) {
 		password: cols[1],
 		uid: Number(cols[2]),
 		gid: Number(cols[3]),
-		fullname: cols[7], // actually full name
+		fullname: cols[7],
 		homedir: cols[8],
 		shell: cols[9]
 	};
@@ -45,25 +46,17 @@ function extractLinux(line) {
 		password: cols[1],
 		uid: Number(cols[2]),
 		gid: Number(cols[3]),
-		fullname: cols[4] && cols[4].split(',')[0], // comments or full name
+		fullname: cols[4] && cols[4].split(',')[0],
 		homedir: cols[5],
 		shell: cols[6]
 	};
 }
 
-var extracts = {
-  linux: extractLinux,
-  darwin: extractDarwin,
-};
-
 function getUser(str, username) {
 	var lines = str.split('\n');
 	var i = 0;
 	var l = lines.length;
-	var extract = extracts[process.platform];
-	if (!extract) {
-		return cb(new Error('Platform not supported'));
-	}
+	var extract = process.platform === 'linux' ? extractLinux : extractDarwin;
 
 	while (i < l) {
 		var user = extract(lines[i++]);
@@ -74,35 +67,30 @@ function getUser(str, username) {
 	}
 }
 
-function fromPasswd(username, cb) {
-	fs.readFile('/etc/passwd', 'utf8', function (err, passwd) {
-		if (err) {
-			return cb(err);
-		}
-
-		cb(null, getUser(passwd, username));
-	});
-}
-
-function fromDarwinId(username, cb) {
-	execFile('/usr/bin/id', ['-P', username], function (err, passwd) {
-		if (err) {
-			return cb(err);
-		}
-
-		cb(null, getUser(passwd, username));
-	});
-}
-
 module.exports = function (username, cb) {
 	if (typeof username !== 'string' && typeof username !== 'number') {
 		throw new TypeError('Expected a string or number');
 	}
+
 	if (process.platform === 'linux') {
-		return fromPasswd(username, cb);
+		fs.readFile('/etc/passwd', 'utf8', function (err, passwd) {
+			if (err) {
+				cb(err);
+				return;
+			}
+
+			cb(null, getUser(passwd, username));
+		});
 	} else if (process.platform === 'darwin') {
-		return fromDarwinId(username, cb);
-	}	else {
+		execFile('/usr/bin/id', ['-P', username], function (err, stdout) {
+			if (err) {
+				cb(err);
+				return;
+			}
+
+			cb(null, getUser(stdout, username));
+		});
+	} else {
 		throw new Error('Platform not supported');
 	}
 };
@@ -112,5 +100,11 @@ module.exports.sync = function (username) {
 		throw new TypeError('Expected a string or number');
 	}
 
-	return getUser(fs.readFileSync('/etc/passwd', 'utf8'), username);
+	if (process.platform === 'linux') {
+		return getUser(fs.readFileSync('/etc/passwd', 'utf8'), username);
+	} else if (process.platform === 'darwin') {
+		return getUser(execSync('/usr/bin/id -P "' + username + '"').stdout, username);
+	} else {
+		throw new Error('Platform not supported');
+	}
 };

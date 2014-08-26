@@ -20,6 +20,8 @@
   ],
   "keywords": [
     "passwd",
+    "linux",
+    "osx",
     "uid",
     "gid",
     "pw",
@@ -35,6 +37,9 @@
     "password",
     "passwords"
   ],
+  "dependencies": {
+    "sync-exec": "^0.3.2"
+  },
   "devDependencies": {
     "mocha": "*"
   }

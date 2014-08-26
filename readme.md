@@ -2,17 +2,14 @@
 
 > Get the [passwd](http://en.wikipedia.org/wiki/Passwd) user entry from a username or [uid](http://en.wikipedia.org/wiki/User_identifier_(Unix))
 
-*`passwd` isn't used on OS X or Windows.*
+Works on Linux and OS X.
 
 
-## Install
+## Usage
 
 ```sh
 $ npm install --save passwd-user
 ```
-
-
-## Usage
 
 ```js
 var passwdUser = require('passwd-user');
@@ -24,7 +21,7 @@ passwdUser.sync('sindresorhus');
 	password: '*',
 	uid: 501,
 	gid: 20,
-	comments: ['Sindre Sorhus', 'unicorn'],
+	fullname: 'Sindre Sorhus',
 	homedir: '/home/sindresorhus',
 	shell: '/bin/zsh'
 }
@@ -46,7 +43,7 @@ Accepts a `username` or `uid` number and returns an object with:
 - `password`
 - `uid`: user ID
 - `gid`: group ID
-- `comments`: user information
+- `fullname`: name of user
 - `homedir`: home directory
 - `shell`: default shell
 
