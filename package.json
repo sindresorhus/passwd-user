@@ -38,7 +38,7 @@
     "passwords"
   ],
   "dependencies": {
-    "sync-exec": "^0.3.2"
+    "sync-exec": "^0.4.0"
   },
   "devDependencies": {
     "mocha": "*"
