@@ -2,14 +2,17 @@
 
 > Get the [passwd](http://en.wikipedia.org/wiki/Passwd) user entry from a username or [uid](http://en.wikipedia.org/wiki/User_identifier_(Unix))
 
-Works on Linux and OS X.
+Works on OS X and Linux.
+
+
+## Instal
+
+```
+$ npm install --save passwd-user
+```
 
 
 ## Usage
-
-```sh
-$ npm install --save passwd-user
-```
 
 ```js
 var passwdUser = require('passwd-user');
@@ -54,8 +57,8 @@ Accepts a `username` or `uid` number and returns an object with:
 
 ## Related
 
-- [username](https://github.com/sindresorhus/username) - get the users username *(cross-platform)*
-- [fullname](https://github.com/sindresorhus/fullname) - get the users fullname *(cross-platform)*
+- [`username`](https://github.com/sindresorhus/username) - get the users username *(cross-platform)*
+- [`fullname`](https://github.com/sindresorhus/fullname) - get the users fullname *(cross-platform)*
 
 
 ## License
