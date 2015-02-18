@@ -1,6 +1,6 @@
 {
   "name": "passwd-user",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Get the passwd user entry from a username or uid",
   "license": "MIT",
   "repository": "sindresorhus/passwd-user",
