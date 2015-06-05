@@ -1,8 +1,7 @@
 'use strict';
 var fs = require('fs');
 var execFile = require('child_process').execFile;
-var execFileSync = require('child_process').execFileSync;
-var execSync = require('sync-exec');
+var execFileSync = require('exec-file-sync');
 
 function extractDarwin(line) {
 	var cols = line.split(':');
@@ -104,14 +103,7 @@ module.exports.sync = function (username) {
 	if (process.platform === 'linux') {
 		return getUser(fs.readFileSync('/etc/passwd', 'utf8'), username);
 	} else if (process.platform === 'darwin') {
-		if (typeof execFileSync === 'function') {
-			return getUser(execFileSync('/usr/bin/id', ['-P', username], {
-				encoding: 'utf8',
-				stdio: ['ignore', 'pipe', 'ignore']
-			}), username);
-		}
-
-		return getUser(execSync('/usr/bin/id -P "' + username + '"').stdout, username);
+		return getUser(execFileSync('/usr/bin/id', ['-P', username]).toString(), username);
 	} else {
 		throw new Error('Platform not supported');
 	}

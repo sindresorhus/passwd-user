@@ -7,7 +7,7 @@
   "author": {
     "name": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "http://sindresorhus.com"
+    "url": "sindresorhus.com"
   },
   "engines": {
     "node": ">=0.10.0"
@@ -38,7 +38,7 @@
     "passwords"
   ],
   "dependencies": {
-    "sync-exec": "^0.5.0"
+    "exec-file-sync": "^1.0.0"
   },
   "devDependencies": {
     "mocha": "*"
