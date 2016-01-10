@@ -15,26 +15,32 @@ $ npm install --save passwd-user
 ## Usage
 
 ```js
-var passwdUser = require('passwd-user');
+const passwdUser = require('passwd-user');
 
-passwdUser.sync('sindresorhus');
-/*
-{
-	username: 'sindresorhus',
-	password: '*',
-	uid: 501,
-	gid: 20,
-	fullname: 'Sindre Sorhus',
-	homedir: '/home/sindresorhus',
-	shell: '/bin/zsh'
-}
-*/
+passwdUser('sindresorhus').then(user => {
+	console.log(user);
+	/*
+	{
+		username: 'sindresorhus',
+		password: '*',
+		uid: 501,
+		gid: 20,
+		fullname: 'Sindre Sorhus',
+		homedir: '/home/sindresorhus',
+		shell: '/bin/zsh'
+	}
+	*/
+});
 
 // or
-passwdUser.sync(501);
+passwdUser(501).then(user => {
+	console.log('Got entry for user 501');
+});
 
 // or
-passwdUser.sync(process.getuid());
+passwdUser(process.getuid()).then(user => {
+	console.log(`Got entry for user ${user.uid}`);
+});
 ```
 
 
@@ -50,9 +56,13 @@ Accepts a `username` or `uid` number and returns an object with:
 - `homedir`: home directory
 - `shell`: default shell
 
-### passwdUser(username | uid, callback)
+### passwdUser(username | uid)
+
+Returns a promise for an object with the user entry.
 
 ### passwdUser.sync(username | uid)
+
+Returns an object with the user entry.
 
 
 ## Related

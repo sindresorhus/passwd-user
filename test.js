@@ -3,8 +3,7 @@ var assert = require('assert');
 var passwdUser = require('./');
 
 it('should get passwd entry async', function (cb) {
-	passwdUser('root', function (err, user) {
-		assert(!err, err);
+	passwdUser('root').then(function (user) {
 		assert.equal(user.uid, 0);
 
 		if (process.platform === 'linux') {
