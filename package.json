@@ -13,7 +13,7 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "ava"
   },
   "files": [
     "index.js"
@@ -44,6 +44,6 @@
     "pinkie-promise": "^2.0.0"
   },
   "devDependencies": {
-    "mocha": "*"
+    "ava": "*"
   }
 }
