@@ -1,12 +1,11 @@
 'use strict';
-var fs = require('fs');
-var execFileSync = require('exec-file-sync');
-var execa = require('execa');
-var pify = require('pify');
-var Promise = require('pinkie-promise');
+const fs = require('fs');
+const childProcess = require('child_process');
+const execa = require('execa');
+const pify = require('pify');
 
 function extractDarwin(line) {
-	var cols = line.split(':');
+	const cols = line.split(':');
 
 	// Darwin passwd(5)
 	// 0 name      User's login name.
@@ -32,7 +31,7 @@ function extractDarwin(line) {
 }
 
 function extractLinux(line) {
-	var cols = line.split(':');
+	const cols = line.split(':');
 
 	// Linux passwd(5):
 	// 0 login name
@@ -55,13 +54,13 @@ function extractLinux(line) {
 }
 
 function getUser(str, username) {
-	var lines = str.split('\n');
-	var i = 0;
-	var l = lines.length;
-	var extract = process.platform === 'linux' ? extractLinux : extractDarwin;
+	const extract = process.platform === 'linux' ? extractLinux : extractDarwin;
+	const lines = str.split('\n');
+	const l = lines.length;
+	let i = 0;
 
 	while (i < l) {
-		var user = extract(lines[i++]);
+		const user = extract(lines[i++]);
 
 		if (user.username === username || user.uid === Number(username)) {
 			return user;
@@ -69,27 +68,24 @@ function getUser(str, username) {
 	}
 }
 
-module.exports = function (username) {
+module.exports = username => {
 	if (typeof username !== 'string' && typeof username !== 'number') {
 		return Promise.reject(new TypeError('Expected a string or number'));
 	}
 
 	if (process.platform === 'linux') {
-		return pify(fs.readFile, Promise)('/etc/passwd', 'utf8').then(function (passwd) {
-			return getUser(passwd, username);
-		});
+		return pify(fs.readFile)('/etc/passwd', 'utf8')
+			.then(passwd => getUser(passwd, username));
 	}
 
 	if (process.platform === 'darwin') {
-		return execa('/usr/bin/id', ['-P', username]).then(function (res) {
-			return getUser(res.stdout, username);
-		});
+		return execa('/usr/bin/id', ['-P', username]).then(x => getUser(x.stdout, username));
 	}
 
 	return Promise.reject(new Error('Platform not supported'));
 };
 
-module.exports.sync = function (username) {
+module.exports.sync = username => {
 	if (typeof username !== 'string' && typeof username !== 'number') {
 		throw new TypeError('Expected a string or number');
 	}
@@ -99,7 +95,7 @@ module.exports.sync = function (username) {
 	}
 
 	if (process.platform === 'darwin') {
-		return getUser(execFileSync('/usr/bin/id', ['-P', username]).toString(), username);
+		return getUser(childProcess.execFileSync('/usr/bin/id', ['-P', username]).toString(), username);
 	}
 
 	throw new Error('Platform not supported');
