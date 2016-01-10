@@ -13,7 +13,7 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "xo && ava"
   },
   "files": [
     "index.js"
@@ -38,9 +38,13 @@
     "passwords"
   ],
   "dependencies": {
-    "exec-file-sync": "^2.0.0"
+    "exec-file-sync": "^2.0.0",
+    "execa": "^0.2.1",
+    "pify": "^2.3.0",
+    "pinkie-promise": "^2.0.0"
   },
   "devDependencies": {
-    "mocha": "*"
+    "ava": "*",
+    "xo": "*"
   }
 }

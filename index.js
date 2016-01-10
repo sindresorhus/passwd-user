@@ -1,7 +1,9 @@
 'use strict';
 var fs = require('fs');
-var execFile = require('child_process').execFile;
 var execFileSync = require('exec-file-sync');
+var execa = require('execa');
+var pify = require('pify');
+var Promise = require('pinkie-promise');
 
 function extractDarwin(line) {
 	var cols = line.split(':');
@@ -67,32 +69,24 @@ function getUser(str, username) {
 	}
 }
 
-module.exports = function (username, cb) {
+module.exports = function (username) {
 	if (typeof username !== 'string' && typeof username !== 'number') {
-		throw new TypeError('Expected a string or number');
+		return Promise.reject(new TypeError('Expected a string or number'));
 	}
 
 	if (process.platform === 'linux') {
-		fs.readFile('/etc/passwd', 'utf8', function (err, passwd) {
-			if (err) {
-				cb(err);
-				return;
-			}
-
-			cb(null, getUser(passwd, username));
+		return pify(fs.readFile, Promise)('/etc/passwd', 'utf8').then(function (passwd) {
+			return getUser(passwd, username);
 		});
-	} else if (process.platform === 'darwin') {
-		execFile('/usr/bin/id', ['-P', username], function (err, stdout) {
-			if (err) {
-				cb(err);
-				return;
-			}
-
-			cb(null, getUser(stdout, username));
-		});
-	} else {
-		throw new Error('Platform not supported');
 	}
+
+	if (process.platform === 'darwin') {
+		return execa('/usr/bin/id', ['-P', username]).then(function (res) {
+			return getUser(res.stdout, username);
+		});
+	}
+
+	return Promise.reject(new Error('Platform not supported'));
 };
 
 module.exports.sync = function (username) {
@@ -102,9 +96,11 @@ module.exports.sync = function (username) {
 
 	if (process.platform === 'linux') {
 		return getUser(fs.readFileSync('/etc/passwd', 'utf8'), username);
-	} else if (process.platform === 'darwin') {
-		return getUser(execFileSync('/usr/bin/id', ['-P', username]).toString(), username);
-	} else {
-		throw new Error('Platform not supported');
 	}
+
+	if (process.platform === 'darwin') {
+		return getUser(execFileSync('/usr/bin/id', ['-P', username]).toString(), username);
+	}
+
+	throw new Error('Platform not supported');
 };

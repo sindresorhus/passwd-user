@@ -1,29 +1,17 @@
-'use strict';
-var assert = require('assert');
-var passwdUser = require('./');
+import test from 'ava';
+import m from './';
 
-it('should get passwd entry async', function (cb) {
-	passwdUser('root', function (err, user) {
-		assert(!err, err);
-		assert.equal(user.uid, 0);
+test('get passwd entry async', async t => {
+	const user = await m('root');
+	const homedir = process.platform === 'linux' ? '/root' : '/var/root';
 
-		if (process.platform === 'linux') {
-			assert.strictEqual(user.homedir, '/root');
-		} else if (process.platform === 'darwin') {
-			assert.strictEqual(user.homedir, '/var/root');
-		}
-
-		cb();
-	});
+	t.is(user.homedir, homedir);
 });
 
-it('should get passwd entry', function () {
-	assert.equal(passwdUser.sync('root').uid, 0);
-	assert.equal(passwdUser.sync(0).username, 'root');
+test('get passwd entry', t => {
+	const homedir = process.platform === 'linux' ? '/root' : '/var/root';
 
-	if (process.platform === 'linux') {
-		assert.strictEqual(passwdUser.sync('root').homedir, '/root');
-	} else if (process.platform === 'darwin') {
-		assert.strictEqual(passwdUser.sync('root').homedir, '/var/root');
-	}
+	t.is(m.sync('root').uid, 0);
+	t.is(m.sync(0).username, 'root');
+	t.is(m.sync('root').homedir, homedir);
 });
