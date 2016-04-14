@@ -67,10 +67,10 @@ Returns an object with the user entry.
 
 ## Related
 
-- [`username`](https://github.com/sindresorhus/username) - get the users username *(cross-platform)*
-- [`fullname`](https://github.com/sindresorhus/fullname) - get the users fullname *(cross-platform)*
+- [username](https://github.com/sindresorhus/username) - Get the user's username *(cross-platform)*
+- [fullname](https://github.com/sindresorhus/fullname) - Get the user's fullname *(cross-platform)*
 
 
 ## License
 
-MIT © [Sindre Sorhus](http://sindresorhus.com)
+MIT © [Sindre Sorhus](https://sindresorhus.com)
