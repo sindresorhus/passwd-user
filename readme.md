@@ -2,7 +2,7 @@
 
 > Get the [passwd](http://en.wikipedia.org/wiki/Passwd) user entry from a username or [uid](http://en.wikipedia.org/wiki/User_identifier_(Unix))
 
-Works on OS X and Linux.
+Works on OS X and Linux. See [`user-info`](https://github.com/sindresorhus/user-info) if you need cross-platform support.
 
 
 ## Instal
