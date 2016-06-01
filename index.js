@@ -1,6 +1,5 @@
 'use strict';
 const fs = require('fs');
-const childProcess = require('child_process');
 const execa = require('execa');
 const pify = require('pify');
 
@@ -79,7 +78,8 @@ module.exports = username => {
 	}
 
 	if (process.platform === 'darwin') {
-		return execa('/usr/bin/id', ['-P', username]).then(x => getUser(x.stdout, username));
+		return execa('/usr/bin/id', ['-P', username])
+			.then(x => getUser(x.stdout, username));
 	}
 
 	return Promise.reject(new Error('Platform not supported'));
@@ -95,7 +95,7 @@ module.exports.sync = username => {
 	}
 
 	if (process.platform === 'darwin') {
-		return getUser(childProcess.execFileSync('/usr/bin/id', ['-P', username]).toString(), username);
+		return getUser(execa.sync('/usr/bin/id', ['-P', username]).stdout, username);
 	}
 
 	throw new Error('Platform not supported');
