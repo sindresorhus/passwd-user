@@ -5,7 +5,7 @@
 Works on OS X and Linux. See [`user-info`](https://github.com/sindresorhus/user-info) if you need cross-platform support.
 
 
-## Instal
+## Install
 
 ```
 $ npm install --save passwd-user
