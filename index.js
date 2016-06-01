@@ -68,8 +68,12 @@ function getUser(str, username) {
 }
 
 module.exports = username => {
-	if (typeof username !== 'string' && typeof username !== 'number') {
-		return Promise.reject(new TypeError('Expected a string or number'));
+	if (username === undefined) {
+		if (typeof process.getuid !== 'function') {
+			return Promise.reject(new Error('Platform not supported'));
+		}
+
+		username = process.getuid();
 	}
 
 	if (process.platform === 'linux') {
@@ -86,8 +90,12 @@ module.exports = username => {
 };
 
 module.exports.sync = username => {
-	if (typeof username !== 'string' && typeof username !== 'number') {
-		throw new TypeError('Expected a string or number');
+	if (username === undefined) {
+		if (typeof process.getuid !== 'function') {
+			throw new Error('Platform not supported');
+		}
+
+		username = process.getuid();
 	}
 
 	if (process.platform === 'linux') {

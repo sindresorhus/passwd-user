@@ -38,7 +38,7 @@ passwdUser(501).then(user => {
 });
 
 // or
-passwdUser(process.getuid()).then(user => {
+passwdUser().then(user => {
 	console.log(`Got entry for user ${user.uid}`);
 });
 ```
@@ -46,7 +46,9 @@ passwdUser(process.getuid()).then(user => {
 
 ## API
 
-Accepts a `username` or `uid` number and returns an object with:
+Accepts a `username` or [`uid` number](https://en.wikipedia.org/wiki/User_identifier). Defaults to the current user ([`process.getuid()`](https://nodejs.org/api/process.html#process_process_getuid)).
+
+Returns an object with:
 
 - `username`
 - `password`
@@ -56,11 +58,11 @@ Accepts a `username` or `uid` number and returns an object with:
 - `homedir`: home directory
 - `shell`: default shell
 
-### passwdUser(username | uid)
+### passwdUser([username | uid])
 
 Returns a promise for an object with the user entry.
 
-### passwdUser.sync(username | uid)
+### passwdUser.sync([username | uid])
 
 Returns an object with the user entry.
 
