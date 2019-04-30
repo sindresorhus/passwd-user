@@ -1,10 +1,12 @@
 'use strict';
+const {promisify} = require('util');
 const fs = require('fs');
 const execa = require('execa');
-const pify = require('pify');
+
+const readFileP = promisify(fs.readFile);
 
 function extractDarwin(line) {
-	const cols = line.split(':');
+	const columns = line.split(':');
 
 	// Darwin passwd(5)
 	// 0 name      User's login name.
@@ -19,18 +21,18 @@ function extractDarwin(line) {
 	// 9 shell     User's login shell.
 
 	return {
-		username: cols[0],
-		password: cols[1],
-		uid: Number(cols[2]),
-		gid: Number(cols[3]),
-		fullname: cols[7],
-		homedir: cols[8],
-		shell: cols[9]
+		userName: columns[0],
+		password: columns[1],
+		uid: Number(columns[2]),
+		gid: Number(columns[3]),
+		fullName: columns[7],
+		homeDirectory: columns[8],
+		shell: columns[9]
 	};
 }
 
 function extractLinux(line) {
-	const cols = line.split(':');
+	const columns = line.split(':');
 
 	// Linux passwd(5):
 	// 0 login name
@@ -42,68 +44,70 @@ function extractLinux(line) {
 	// 6 optional user command interpreter
 
 	return {
-		username: cols[0],
-		password: cols[1],
-		uid: Number(cols[2]),
-		gid: Number(cols[3]),
-		fullname: cols[4] && cols[4].split(',')[0],
-		homedir: cols[5],
-		shell: cols[6]
+		userName: columns[0],
+		password: columns[1],
+		uid: Number(columns[2]),
+		gid: Number(columns[3]),
+		fullName: columns[4] && columns[4].split(',')[0],
+		homeDirectory: columns[5],
+		shell: columns[6]
 	};
 }
 
-function getUser(str, username) {
-	const extract = process.platform === 'linux' ? extractLinux : extractDarwin;
-	const lines = str.split('\n');
-	const l = lines.length;
+const extract = process.platform === 'linux' ? extractLinux : extractDarwin;
+
+function getUser(passwd, userName) {
+	const lines = passwd.split('\n');
+	const linesCount = lines.length;
 	let i = 0;
 
-	while (i < l) {
+	while (i < linesCount) {
 		const user = extract(lines[i++]);
 
-		if (user.username === username || user.uid === Number(username)) {
+		if (user.userName === userName || user.uid === Number(userName)) {
 			return user;
 		}
 	}
 }
 
-module.exports = username => {
-	if (username === undefined) {
+module.exports = async userName => {
+	if (userName === undefined) {
 		if (typeof process.getuid !== 'function') {
-			return Promise.reject(new Error('Platform not supported'));
-		}
-
-		username = process.getuid();
-	}
-
-	if (process.platform === 'linux') {
-		return pify(fs.readFile)('/etc/passwd', 'utf8')
-			.then(passwd => getUser(passwd, username));
-	}
-
-	if (process.platform === 'darwin') {
-		return execa('/usr/bin/id', ['-P', username])
-			.then(x => getUser(x.stdout, username));
-	}
-
-	return Promise.reject(new Error('Platform not supported'));
-};
-
-module.exports.sync = username => {
-	if (username === undefined) {
-		if (typeof process.getuid !== 'function') {
+			// eslint-disable-next-line unicorn/prefer-type-error
 			throw new Error('Platform not supported');
 		}
 
-		username = process.getuid();
+		userName = process.getuid();
 	}
 
 	if (process.platform === 'linux') {
-		return getUser(fs.readFileSync('/etc/passwd', 'utf8'), username);
+		return getUser(await readFileP('/etc/passwd', 'utf8'), userName);
 	}
 
 	if (process.platform === 'darwin') {
-		return getUser(execa.sync('/usr/bin/id', ['-P', username]).stdout, username);
+		const result = await execa('/usr/bin/id', ['-P', userName]);
+		return getUser(result.stdout, userName);
+	}
+
+	throw new Error('Platform not supported');
+};
+
+module.exports.sync = userName => {
+	if (userName === undefined) {
+		if (typeof process.getuid !== 'function') {
+			// eslint-disable-next-line unicorn/prefer-type-error
+			throw new Error('Platform not supported');
+		}
+
+		userName = process.getuid();
+	}
+
+	if (process.platform === 'linux') {
+		return getUser(fs.readFileSync('/etc/passwd', 'utf8'), userName);
+	}
+
+	if (process.platform === 'darwin') {
+		return getUser(execa.sync('/usr/bin/id', ['-P', userName]).stdout, userName);
 	}
 
 	throw new Error('Platform not supported');

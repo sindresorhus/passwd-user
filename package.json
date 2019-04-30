@@ -1,52 +1,50 @@
 {
-  "name": "passwd-user",
-  "version": "2.1.0",
-  "description": "Get the passwd user entry from a username or uid",
-  "license": "MIT",
-  "repository": "sindresorhus/passwd-user",
-  "author": {
-    "name": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com"
-  },
-  "engines": {
-    "node": ">=4"
-  },
-  "scripts": {
-    "test": "xo && ava"
-  },
-  "files": [
-    "index.js"
-  ],
-  "keywords": [
-    "passwd",
-    "linux",
-    "macos",
-    "osx",
-    "uid",
-    "gid",
-    "pw",
-    "getpwuid",
-    "posix",
-    "unix",
-    "shell",
-    "home",
-    "dir",
-    "username",
-    "user",
-    "etc",
-    "password",
-    "passwords"
-  ],
-  "dependencies": {
-    "execa": "^0.4.0",
-    "pify": "^2.3.0"
-  },
-  "devDependencies": {
-    "ava": "*",
-    "xo": "*"
-  },
-  "xo": {
-    "esnext": true
-  }
+	"name": "passwd-user",
+	"version": "2.1.0",
+	"description": "Get the passwd user entry from a username or uid",
+	"license": "MIT",
+	"repository": "sindresorhus/passwd-user",
+	"author": {
+		"name": "Sindre Sorhus",
+		"email": "sindresorhus@gmail.com",
+		"url": "sindresorhus.com"
+	},
+	"engines": {
+		"node": ">=8"
+	},
+	"scripts": {
+		"test": "xo && ava && tsd"
+	},
+	"files": [
+		"index.js",
+		"index.d.ts"
+	],
+	"keywords": [
+		"passwd",
+		"linux",
+		"macos",
+		"osx",
+		"uid",
+		"gid",
+		"pw",
+		"getpwuid",
+		"posix",
+		"unix",
+		"shell",
+		"home",
+		"dir",
+		"username",
+		"user",
+		"etc",
+		"password",
+		"passwords"
+	],
+	"dependencies": {
+		"execa": "^1.0.0"
+	},
+	"devDependencies": {
+		"ava": "^1.4.1",
+		"tsd": "^0.7.2",
+		"xo": "^0.24.0"
+	}
 }
