@@ -8,7 +8,7 @@ test('async', async t => {
 });
 
 test('sync', t => {
-	t.is(passwdUser.sync('root').uid, 0);
-	t.is(passwdUser.sync(0).userName, 'root');
+	t.is(passwdUser.sync('root').userIdentifier, 0);
+	t.is(passwdUser.sync(0).username, 'root');
 	t.is(passwdUser.sync('root').homeDirectory, homeDirectory);
 });

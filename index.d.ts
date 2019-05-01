@@ -1,17 +1,17 @@
 declare namespace passwdUser {
 	interface UserData {
-		userName: string;
+		username: string;
 		password: string;
 
 		/**
-		User ID.
+		Also known as [UID](https://en.wikipedia.org/wiki/User_identifier).
 		*/
-		uid: number;
+		userIdentifier: number;
 
 		/**
-		Group ID.
+		Also known as [GID](https://en.wikipedia.org/wiki/Group_identifier).
 		*/
-		gid: number;
+		groupIdentifier: number;
 
 		/**
 		Name of user.
@@ -33,9 +33,9 @@ declare namespace passwdUser {
 
 declare const passwdUser: {
 	/**
-	Get the [passwd](https://en.wikipedia.org/wiki/Passwd) user entry from a username or [uid](https://en.wikipedia.org/wiki/User_identifier_(Unix)).
+	Get the [passwd](https://en.wikipedia.org/wiki/Passwd) user entry from a username or [user identifier (UID)](https://en.wikipedia.org/wiki/User_identifier_(Unix)).
 
-	@param userName - The user name or the [`uid` number](https://en.wikipedia.org/wiki/User_identifier) to look up. Default: [`process.getuid()`](https://nodejs.org/api/process.html#process_process_getuid) (the current user).
+	@param username - The username or the [user identifier (UID)](https://en.wikipedia.org/wiki/User_identifier) to look up. Default: [`process.getuid()`](https://nodejs.org/api/process.html#process_process_getuid) (The current user).
 
 	@example
 	```
@@ -44,10 +44,10 @@ declare const passwdUser: {
 	(async () => {
 		console.log(await passwdUser('sindresorhus'));
 		// {
-		// 	userName: 'sindresorhus',
+		// 	username: 'sindresorhus',
 		// 	password: '*',
-		// 	uid: 501,
-		// 	gid: 20,
+		// 	userIdentifier: 501,
+		// 	groupIdentifier: 20,
 		// 	fullName: 'Sindre Sorhus',
 		// 	homeDirectory: '/home/sindresorhus',
 		// 	shell: '/bin/zsh'
@@ -57,16 +57,16 @@ declare const passwdUser: {
 		console.log('Got entry for user 501');
 
 		const user = await passwdUser();
-		console.log(`Got entry for user ${user.uid}`);
+		console.log(`Got entry for user ${user.userIdentifier}`);
 	})();
 	```
 	*/
-	(userName?: string | number): Promise<passwdUser.UserData | undefined>;
+	(username?: string | number): Promise<passwdUser.UserData | undefined>;
 
 	/**
-	Synchronously get the [passwd](https://en.wikipedia.org/wiki/Passwd) user entry from a username or [uid](https://en.wikipedia.org/wiki/User_identifier_(Unix)).
+	Synchronously get the [passwd](https://en.wikipedia.org/wiki/Passwd) user entry from a username or [user identifier (UID)](https://en.wikipedia.org/wiki/User_identifier_(Unix)).
 
-	@param userName - The user name or the [`uid` number](https://en.wikipedia.org/wiki/User_identifier) to look up. Default: [`process.getuid()`](https://nodejs.org/api/process.html#process_process_getuid) (the current user).
+	@param username - The user name or the [user identifier (UID)](https://en.wikipedia.org/wiki/User_identifier) to look up. Default: [`process.getuid()`](https://nodejs.org/api/process.html#process_process_getuid) (The current user).
 
 	@example
 	```
@@ -74,10 +74,10 @@ declare const passwdUser: {
 
 	console.log(passwdUser.sync('sindresorhus'));
 	// {
-	// 	userName: 'sindresorhus',
+	// 	username: 'sindresorhus',
 	// 	password: '*',
-	// 	uid: 501,
-	// 	gid: 20,
+	// 	userIdentifier: 501,
+	// 	groupIdentifier: 20,
 	// 	fullName: 'Sindre Sorhus',
 	// 	homeDirectory: '/home/sindresorhus',
 	// 	shell: '/bin/zsh'
@@ -87,10 +87,10 @@ declare const passwdUser: {
 	console.log('Got entry for user 501');
 
 	const user = passwdUser.sync();
-	console.log(`Got entry for user ${user.uid}`);
+	console.log(`Got entry for user ${user.userIdentifier}`);
 	```
 	*/
-	sync(userName?: string | number): passwdUser.UserData | undefined;
+	sync(username?: string | number): passwdUser.UserData | undefined;
 };
 
 export = passwdUser;

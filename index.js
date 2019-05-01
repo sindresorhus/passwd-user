@@ -21,10 +21,10 @@ function extractDarwin(line) {
 	// 9 shell     User's login shell.
 
 	return {
-		userName: columns[0],
+		username: columns[0],
 		password: columns[1],
-		uid: Number(columns[2]),
-		gid: Number(columns[3]),
+		userIdentifier: Number(columns[2]),
+		groupIdentifier: Number(columns[3]),
 		fullName: columns[7],
 		homeDirectory: columns[8],
 		shell: columns[9]
@@ -44,10 +44,10 @@ function extractLinux(line) {
 	// 6 optional user command interpreter
 
 	return {
-		userName: columns[0],
+		username: columns[0],
 		password: columns[1],
-		uid: Number(columns[2]),
-		gid: Number(columns[3]),
+		userIdentifier: Number(columns[2]),
+		groupIdentifier: Number(columns[3]),
 		fullName: columns[4] && columns[4].split(',')[0],
 		homeDirectory: columns[5],
 		shell: columns[6]
@@ -56,7 +56,7 @@ function extractLinux(line) {
 
 const extract = process.platform === 'linux' ? extractLinux : extractDarwin;
 
-function getUser(passwd, userName) {
+function getUser(passwd, username) {
 	const lines = passwd.split('\n');
 	const linesCount = lines.length;
 	let i = 0;
@@ -64,50 +64,50 @@ function getUser(passwd, userName) {
 	while (i < linesCount) {
 		const user = extract(lines[i++]);
 
-		if (user.userName === userName || user.uid === Number(userName)) {
+		if (user.username === username || user.userIdentifier === Number(username)) {
 			return user;
 		}
 	}
 }
 
-module.exports = async userName => {
-	if (userName === undefined) {
+module.exports = async username => {
+	if (username === undefined) {
 		if (typeof process.getuid !== 'function') {
 			// eslint-disable-next-line unicorn/prefer-type-error
 			throw new Error('Platform not supported');
 		}
 
-		userName = process.getuid();
+		username = process.getuid();
 	}
 
 	if (process.platform === 'linux') {
-		return getUser(await readFileP('/etc/passwd', 'utf8'), userName);
+		return getUser(await readFileP('/etc/passwd', 'utf8'), username);
 	}
 
 	if (process.platform === 'darwin') {
-		const result = await execa('/usr/bin/id', ['-P', userName]);
-		return getUser(result.stdout, userName);
+		const {stdout} = await execa('/usr/bin/id', ['-P', username]);
+		return getUser(stdout, username);
 	}
 
 	throw new Error('Platform not supported');
 };
 
-module.exports.sync = userName => {
-	if (userName === undefined) {
+module.exports.sync = username => {
+	if (username === undefined) {
 		if (typeof process.getuid !== 'function') {
 			// eslint-disable-next-line unicorn/prefer-type-error
 			throw new Error('Platform not supported');
 		}
 
-		userName = process.getuid();
+		username = process.getuid();
 	}
 
 	if (process.platform === 'linux') {
-		return getUser(fs.readFileSync('/etc/passwd', 'utf8'), userName);
+		return getUser(fs.readFileSync('/etc/passwd', 'utf8'), username);
 	}
 
 	if (process.platform === 'darwin') {
-		return getUser(execa.sync('/usr/bin/id', ['-P', userName]).stdout, userName);
+		return getUser(execa.sync('/usr/bin/id', ['-P', username]).stdout, username);
 	}
 
 	throw new Error('Platform not supported');

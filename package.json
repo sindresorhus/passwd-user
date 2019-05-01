@@ -1,7 +1,7 @@
 {
 	"name": "passwd-user",
 	"version": "2.1.0",
-	"description": "Get the passwd user entry from a username or uid",
+	"description": "Get the passwd user entry from a username or user identifier (UID)",
 	"license": "MIT",
 	"repository": "sindresorhus/passwd-user",
 	"author": {
@@ -37,7 +37,8 @@
 		"user",
 		"etc",
 		"password",
-		"passwords"
+		"passwords",
+		"identifier"
 	],
 	"dependencies": {
 		"execa": "^1.0.0"
