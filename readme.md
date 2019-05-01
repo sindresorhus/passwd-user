@@ -1,6 +1,6 @@
 # passwd-user [![Build Status](https://travis-ci.org/sindresorhus/passwd-user.svg?branch=master)](https://travis-ci.org/sindresorhus/passwd-user)
 
-> Get the [passwd](http://en.wikipedia.org/wiki/Passwd) user entry from a username or [uid](http://en.wikipedia.org/wiki/User_identifier_(Unix))
+> Get the [passwd](https://en.wikipedia.org/wiki/Passwd) user entry from a username or [uid](https://en.wikipedia.org/wiki/User_identifier_(Unix))
 
 Works on macOS and Linux. See [`user-info`](https://github.com/sindresorhus/user-info) if you need cross-platform support.
 
@@ -8,7 +8,7 @@ Works on macOS and Linux. See [`user-info`](https://github.com/sindresorhus/user
 ## Install
 
 ```
-$ npm install --save passwd-user
+$ npm install passwd-user
 ```
 
 
@@ -17,54 +17,61 @@ $ npm install --save passwd-user
 ```js
 const passwdUser = require('passwd-user');
 
-passwdUser('sindresorhus').then(user => {
-	console.log(user);
+(async () => {
+	console.log(await passwdUser('sindresorhus'));
 	/*
 	{
-		username: 'sindresorhus',
+		userName: 'sindresorhus',
 		password: '*',
 		uid: 501,
 		gid: 20,
-		fullname: 'Sindre Sorhus',
-		homedir: '/home/sindresorhus',
+		fullName: 'Sindre Sorhus',
+		homeDirectory: '/home/sindresorhus',
 		shell: '/bin/zsh'
 	}
 	*/
-});
 
-// or
-passwdUser(501).then(user => {
+	await passwdUser(501);
 	console.log('Got entry for user 501');
-});
 
-// or
-passwdUser().then(user => {
+	const user = await passwdUser();
 	console.log(`Got entry for user ${user.uid}`);
-});
+})();
 ```
 
 
 ## API
 
-Accepts a `username` or [`uid` number](https://en.wikipedia.org/wiki/User_identifier). Defaults to the current user ([`process.getuid()`](https://nodejs.org/api/process.html#process_process_getuid)).
-
 Returns an object with:
 
-- `username`
+- `userName`
 - `password`
 - `uid`: user ID
 - `gid`: group ID
-- `fullname`: name of user
-- `homedir`: home directory
+- `fullName`: name of user
+- `homeDirectory`: home directory
 - `shell`: default shell
 
-### passwdUser([username | uid])
+### passwdUser([userName | uid])
 
-Returns a promise for an object with the user entry.
+Returns a `Promise<object>` with the user entry.
 
-### passwdUser.sync([username | uid])
+### passwdUser.sync([userName | uid])
 
-Returns an object with the user entry.
+Returns an `object` with the user entry.
+
+#### userName
+
+Type: `string`
+
+The user name to look up.
+
+#### uid
+
+Type: `number`<br>
+Default: [`process.getuid()`](https://nodejs.org/api/process.html#process_process_getuid) (the current user)
+
+The [`uid` number](https://en.wikipedia.org/wiki/User_identifier) to look up.
 
 
 ## Related
