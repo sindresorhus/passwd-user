@@ -1,5 +1,6 @@
+import process from 'node:process';
 import test from 'ava';
-import passwdUser from '.';
+import {passwdUser, passwdUserSync} from './index.js';
 
 const homeDirectory = process.platform === 'linux' ? '/root' : '/var/root';
 
@@ -8,7 +9,7 @@ test('async', async t => {
 });
 
 test('sync', t => {
-	t.is(passwdUser.sync('root').userIdentifier, 0);
-	t.is(passwdUser.sync(0).username, 'root');
-	t.is(passwdUser.sync('root').homeDirectory, homeDirectory);
+	t.is(passwdUserSync('root').userIdentifier, 0);
+	t.is(passwdUserSync(0).username, 'root');
+	t.is(passwdUserSync('root').homeDirectory, homeDirectory);
 });

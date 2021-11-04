@@ -1,9 +1,6 @@
-'use strict';
-const {promisify} = require('util');
-const fs = require('fs');
-const execa = require('execa');
-
-const readFileP = promisify(fs.readFile);
+import process from 'node:process';
+import fs, {promises as fsPromises} from 'node:fs';
+import execa from 'execa';
 
 function extractDarwin(line) {
 	const columns = line.split(':');
@@ -27,7 +24,7 @@ function extractDarwin(line) {
 		groupIdentifier: Number(columns[3]),
 		fullName: columns[7],
 		homeDirectory: columns[8],
-		shell: columns[9]
+		shell: columns[9],
 	};
 }
 
@@ -50,7 +47,7 @@ function extractLinux(line) {
 		groupIdentifier: Number(columns[3]),
 		fullName: columns[4] && columns[4].split(',')[0],
 		homeDirectory: columns[5],
-		shell: columns[6]
+		shell: columns[6],
 	};
 }
 
@@ -59,10 +56,10 @@ const extract = process.platform === 'linux' ? extractLinux : extractDarwin;
 function getUser(passwd, username) {
 	const lines = passwd.split('\n');
 	const linesCount = lines.length;
-	let i = 0;
+	let index = 0;
 
-	while (i < linesCount) {
-		const user = extract(lines[i++]);
+	while (index < linesCount) {
+		const user = extract(lines[index++]);
 
 		if (user.username === username || user.userIdentifier === Number(username)) {
 			return user;
@@ -70,7 +67,7 @@ function getUser(passwd, username) {
 	}
 }
 
-module.exports = async username => {
+export async function passwdUser(username) {
 	if (username === undefined) {
 		if (typeof process.getuid !== 'function') {
 			// eslint-disable-next-line unicorn/prefer-type-error
@@ -81,7 +78,7 @@ module.exports = async username => {
 	}
 
 	if (process.platform === 'linux') {
-		return getUser(await readFileP('/etc/passwd', 'utf8'), username);
+		return getUser(await fsPromises.readFile('/etc/passwd', 'utf8'), username);
 	}
 
 	if (process.platform === 'darwin') {
@@ -90,9 +87,9 @@ module.exports = async username => {
 	}
 
 	throw new Error('Platform not supported');
-};
+}
 
-module.exports.sync = username => {
+export function passwdUserSync(username) {
 	if (username === undefined) {
 		if (typeof process.getuid !== 'function') {
 			// eslint-disable-next-line unicorn/prefer-type-error
@@ -111,4 +108,4 @@ module.exports.sync = username => {
 	}
 
 	throw new Error('Platform not supported');
-};
+}

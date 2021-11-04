@@ -1,14 +1,14 @@
 import {expectType} from 'tsd';
-import passwdUser = require('.');
+import {passwdUser, passwdUserSync, UserData} from './index.js';
 
-expectType<Promise<passwdUser.UserData | undefined>>(passwdUser());
-expectType<Promise<passwdUser.UserData | undefined>>(passwdUser('sindresorhus'));
-expectType<Promise<passwdUser.UserData | undefined>>(passwdUser(501));
-expectType<passwdUser.UserData | undefined>(passwdUser.sync());
-expectType<passwdUser.UserData | undefined>(passwdUser.sync('sindresorhus'));
-expectType<passwdUser.UserData | undefined>(passwdUser.sync(501));
+expectType<Promise<UserData | undefined>>(passwdUser());
+expectType<Promise<UserData | undefined>>(passwdUser('sindresorhus'));
+expectType<Promise<UserData | undefined>>(passwdUser(501));
+expectType<UserData | undefined>(passwdUserSync());
+expectType<UserData | undefined>(passwdUserSync('sindresorhus'));
+expectType<UserData | undefined>(passwdUserSync(501));
 
-const userData = passwdUser.sync();
+const userData = passwdUserSync();
 
 if (userData) {
 	expectType<string>(userData.username);
